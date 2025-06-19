@@ -1,10 +1,11 @@
 {% if cookiecutter.language == 'python' -%}
 FROM python:3.12-slim
 WORKDIR /app
-COPY src/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY src/ .
-CMD ["python", "main.py"]
+COPY src ./src
+ENV PYTHONUNBUFFERED=1
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 {% elif cookiecutter.language == 'java' -%}
 FROM eclipse-temurin:21-jre
 WORKDIR /app
@@ -21,3 +22,5 @@ WORKDIR /app
 COPY build/{{ cookiecutter.project_slug }} /usr/local/bin/service
 CMD ["service"]
 {% endif -%}
+
+
