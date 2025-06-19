@@ -1,0 +1,16 @@
+{
+  "project_name": "My Financial API",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+  "description": "A stateless micro\u2011service delivering financial data.",
+  "author": "Your Name",
+  "language": [
+    "python",
+    "java",
+    "csharp",
+    "cpp"
+  ],
+  "use_kafka": [
+    "y",
+    "n"
+  ]
+}
