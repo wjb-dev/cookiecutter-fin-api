@@ -1,16 +1,29 @@
+{# ------------------------------------------------------------
+   We need both templating engines:
+
+   • {{ cookiecutter.project_slug }}  ← handled NOW by Cookiecutter
+   • {{ include "...fullname" . }}    ← must be preserved for Helm
+
+   The inline {% raw %} / {% endraw %} blocks tell Cookiecutter’s Jinja
+   to leave the Helm braces alone.
+   ------------------------------------------------------------ #}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "{{ cookiecutter.project_slug }}.fullname" . }}
+  name:
+    {% raw %}{{ include "{% endraw %}{{ cookiecutter.project_slug }}{% raw %}.fullname" . }}{% endraw %}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "{{ cookiecutter.project_slug }}.name" . }}
+      app:
+        {% raw %}{{ include "{% endraw %}{{ cookiecutter.project_slug }}{% raw %}.name" . }}{% endraw %}
   template:
     metadata:
       labels:
-        app: {{ include "{{ cookiecutter.project_slug }}.name" . }}
+        app:
+          {% raw %}{{ include "{% endraw %}{{ cookiecutter.project_slug }}{% raw %}.name" . }}{% endraw %}
     spec:
       containers:
         - name: {{ .Chart.Name }}
