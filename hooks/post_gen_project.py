@@ -1,44 +1,55 @@
-import os
+#!/usr/bin/env python3
+"""
+Cookiecutter post-generation hook
+
+Remove source-tree pieces that belong to *other* languages so the rendered
+project is lean.  Currently supports only Python and Java.
+"""
 import shutil
 from pathlib import Path
 
-project_dir = Path.cwd()
-language = "{{ cookiecutter.language }}"
+# root of the newly generated project
+project_dir = Path(__file__).resolve().parent.parent
 
-def rm(path: Path):
-    if path.is_dir():
-        shutil.rmtree(path, ignore_errors=True)
-    else:
-        path.unlink(missing_ok=True)
+# the choice the user made during cookiecutter prompts
+language = "{{ cookiecutter.language }}".lower()
 
-# maps language ➜ list of (relative) paths to KEEP.
-keep = {
+LANGUAGE_ASSETS = {
     "python": {
-        "requirements.txt", "src/python/__init__.py", "src/python/main.py", "test/python/test_main.py"
+        Path("requirements.txt"),
+        Path("src/python"),
+        Path("tests/python"),          # rename “test”→“tests” if you like
     },
     "java": {
-        "pom.xml", "src/main", "test/java"
-    },
-    "csharp": {
-        "Program.csproj", "src/main/csharp"
-    },
-    "cpp": {
-        "CMakeLists.txt", "src/main/cpp"
+        Path("pom.xml"),
+        Path("src/main"),
+        Path("test/java"),
     },
 }
 
-# remove every language-specific file not in keep[language]
-all_specific = {
-    "python": [ "requirements.txt", "src/python/__init__.py", "src/python/main.py", "test/python/test_main.py"],
-    "java": ["pom.xml", "src/main", "test/java"],
-    "csharp": ["Program.csproj", "src/main/csharp"],
-    "cpp": ["CMakeLists.txt", "src/main/cpp"],
-}
+def rm(path: Path) -> None:
+    """Delete file or directory; ignore if it doesn’t exist."""
+    try:
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+        else:
+            path.unlink(missing_ok=True)  # Py ≥ 3.8
+    except PermissionError:
+        # best-effort – don’t fail the whole generation
+        print(f"⚠️  Could not remove {path}")
 
-for lang, paths in all_specific.items():
+# sanity-check in case someone typed a new language in prompts
+if language not in LANGUAGE_ASSETS:
+    raise SystemExit(
+        f"Unknown language '{language}'. "
+        f"Supported: {', '.join(LANGUAGE_ASSETS)}"
+    )
+
+# remove assets that belong to *other* languages
+for lang, assets in LANGUAGE_ASSETS.items():
     if lang == language:
         continue
-    for rel in paths:
+    for rel in assets:
         rm(project_dir / rel)
 
-print(f"Template clean-up complete → kept only {language} assets.")
+print(f"🧹  Template clean-up complete — kept only {language!r} assets.")
