@@ -1,0 +1,10 @@
+{
+  "app": {
+    "service_name": "{{ cookiecutter.project_slug }}",
+    "threads": 0
+  },
+  "listeners": [
+    { "address": "0.0.0.0", "port": {{ cookiecutter.port | default(8000) }} }
+  ],
+  "log": { "use_stdout": true, "level": "INFO" }
+}
