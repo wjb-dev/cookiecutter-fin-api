@@ -43,23 +43,22 @@ ENTRYPOINT ["dotnet", "DemoApiCSharp.dll"]
 # ---------- build stage ----------
 FROM debian:bookworm-slim AS build
 WORKDIR /src
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake git ca-certificates \
-    libssl-dev zlib1g-dev && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential cmake git ca-certificates \
+        libssl-dev zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . .
 RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && \
-    cmake --build build --target demo-cpp-api -j1    # keep j1 → stable everywhere
+    cmake --build build --target demo-cpp-api -j1   # safer for cross-arch
 
 # ---------- runtime stage ----------
 FROM debian:bookworm-slim
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 zlib1g && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libssl3 zlib1g && \
     rm -rf /var/lib/apt/lists/*
-
 COPY --from=build /src/build/demo-cpp-api /usr/local/bin/service
 EXPOSE 8000
 CMD ["service"]

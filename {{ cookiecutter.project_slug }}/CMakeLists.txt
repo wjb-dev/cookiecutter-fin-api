@@ -6,54 +6,63 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-# ---------- gRPC / protobuf ----------
-# This grabs the *released* artefacts so we don’t build protoc twice.
+# ───────────── gRPC / protobuf deps ─────────────
 FetchContent_Declare(
-  grpc
-  GIT_REPOSITORY https://github.com/grpc/grpc.git
-  GIT_TAG        v1.60.0            # or whatever release you like
+    grpc
+    GIT_REPOSITORY https://github.com/grpc/grpc.git
+    GIT_TAG        v1.60.0            # pin → reproducible
 )
-set(FETCHCONTENT_QUIET FALSE)
-FetchContent_MakeAvailable(grpc)    # brings in protobuf too
+FetchContent_MakeAvailable(grpc)       # also pulls protobuf
 
-# Generate C++ sources from .proto files
-file(GLOB PROTOS proto/*.proto)
-foreach(f ${PROTOS})
-  get_filename_component(fname ${f} NAME_WE)
-  protobuf_generate(
-    LANGUAGE cpp
-    OUT_VAR   pb_srcs
-    PROTOS    ${f}
-  )
-  grpc_generate(
-    LANGUAGE cpp
-    OUT_VAR   grpc_srcs
-    PROTOS    ${f}
-  )
-  list(APPEND GENERATED_SRC ${pb_srcs} ${grpc_srcs})
-endforeach()
+# ───────────── code-gen from proto ─────────────
+file(GLOB PROTO_FILES "${CMAKE_SOURCE_DIR}/proto/*.proto")
 
-# ---------- service binary ----------
+protobuf_generate(
+    LANGUAGE cpp
+    OUT_VAR  PB_SRCS
+    PROTOS   ${PROTO_FILES}
+)
+
+grpc_generate(
+    LANGUAGE cpp
+    OUT_VAR  GRPC_SRCS
+    PROTOS   ${PROTO_FILES}
+)
+
+set(GENERATED ${PB_SRCS} ${GRPC_SRCS})
+
+# ───────────── service binary ─────────────
 add_executable(demo-cpp-api
-    src/main.cpp
-    src/server/EchoServiceImpl.cpp
-    ${GENERATED_SRC}
+    src/main/cpp/main.cpp
+    src/main/cpp/server/EchoServiceImpl.cpp
+    ${GENERATED}
+)
+target_include_directories(demo-cpp-api PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}        # generated *.pb.h
 )
 target_link_libraries(demo-cpp-api PRIVATE
-    gRPC::grpc++       # runtime
-    protobuf::libprotobuf
+    gRPC::grpc++ protobuf::libprotobuf
 )
 
-# ---------- unit tests ----------
+# ───────────── unit tests ─────────────
 enable_testing()
+FetchContent_Declare(
+    catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        v3.6.0
+)
+FetchContent_MakeAvailable(catch2)
+
 add_executable(unit-tests
-    test/EchoServiceTest.cpp
-    ${GENERATED_SRC}         # the same stubs so we can call service locally
+    test/cpp/EchoServiceTest.cpp
+    src/main/cpp/server/EchoServiceImpl.cpp
+    ${GENERATED}
+)
+target_include_directories(unit-tests PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 target_link_libraries(unit-tests PRIVATE
-    gRPC::grpc++
-    protobuf::libprotobuf
-    Catch2::Catch2WithMain           # or gtest if you prefer
+    gRPC::grpc++ protobuf::libprotobuf Catch2::Catch2WithMain
 )
-include(Catch)                       # Catch2 helper
+include(Catch)
 catch_discover_tests(unit-tests)
