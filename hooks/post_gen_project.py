@@ -29,8 +29,8 @@ keep = {
 
 # remove every language-specific file not in keep[language]
 all_specific = {
-    "python": ["requirements.txt", "src/__init__.py", "src/main.py", "tests/test_main.py"],
-    "java": ["pom.xml", "src/main/java", "tests/TestApp.java"],
+    "python": [ "requirements.txt", "src/python/__init__.py", "src/python/main.py", "test/python/test_main.py"],
+    "java": ["pom.xml", "src/main", "test/java"],
     "csharp": ["Program.csproj", "src/main/csharp"],
     "cpp": ["CMakeLists.txt", "src/main/cpp"],
 }
