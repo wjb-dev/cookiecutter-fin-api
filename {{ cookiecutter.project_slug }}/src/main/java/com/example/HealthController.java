@@ -9,6 +9,9 @@ public class HealthController {
 
     @GetMapping("/healthz")
     public Map<String, String> health() {
-        return Map.of("status", "ok");
+        return Map.of(
+            "service", "{{ cookiecutter.project_slug }}",
+            "status",  "ok"
+        );
     }
 }

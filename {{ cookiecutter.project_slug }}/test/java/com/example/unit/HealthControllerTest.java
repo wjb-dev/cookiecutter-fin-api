@@ -1,4 +1,4 @@
-package com.example.{{ cookiecutter.project_slug | replace('-', '') }};
+package com.example;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +19,8 @@ class HealthControllerTest {
     @Test
     void healthzShouldReturnOk() throws Exception {
         mvc.perform(get("/healthz"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("ok"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.service").value("{{ cookiecutter.project_slug }}"))  // injected slug
+            .andExpect(jsonPath("$.status").value("ok"));
     }
 }

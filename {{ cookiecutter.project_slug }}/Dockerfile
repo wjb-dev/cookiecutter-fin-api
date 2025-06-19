@@ -3,9 +3,9 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY src ./src
+COPY src/python ./python
 ENV PYTHONUNBUFFERED=1
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "python.main:app", "--host", "0.0.0.0", "--port", "8000"]
 {% elif cookiecutter.language == 'java' -%}
 # ---------- build stage ----------
 FROM maven:3.9-eclipse-temurin-21 AS builder

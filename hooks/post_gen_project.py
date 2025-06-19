@@ -14,10 +14,10 @@ def rm(path: Path):
 # maps language ➜ list of (relative) paths to KEEP.
 keep = {
     "python": {
-        "requirements.txt", "src/__init__.py", "src/main.py", "tests/test_main.py"
+        "requirements.txt", "src/python/__init__.py", "src/python/main.py", "test/python/test_main.py"
     },
     "java": {
-        "pom.xml", "src/main/java", "tests/TestApp.java"
+        "pom.xml", "src/main", "test/java"
     },
     "csharp": {
         "Program.csproj", "src/main/csharp"
