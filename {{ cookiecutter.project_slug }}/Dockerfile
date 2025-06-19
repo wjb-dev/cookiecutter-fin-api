@@ -20,10 +20,18 @@ WORKDIR /app
 COPY --from=builder /build/target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
 {% elif cookiecutter.language == 'csharp' -%}
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
+# ---------- build stage ----------
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
+WORKDIR /build
+COPY src/main/csharp ./src
+RUN dotnet publish src/DemoApiCSharp.csproj -c Release -o out
+
+# ---------- runtime stage ----------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY published/ .
-CMD ["dotnet", "{{ cookiecutter.project_name }}.dll"]
+COPY --from=builder /build/out .
+ENV ASPNETCORE_URLS=http://0.0.0.0:8000
+ENTRYPOINT ["dotnet", "DemoApiCSharp.dll"]
 {% elif cookiecutter.language == 'cpp' -%}
 FROM debian:bookworm-slim
 WORKDIR /app

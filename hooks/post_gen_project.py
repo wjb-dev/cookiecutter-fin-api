@@ -6,7 +6,8 @@ language = "{{ cookiecutter.language }}"
 
 LANGUAGE_ASSETS = {
     "python": {"requirements.txt", "src/python", "test/python"},
-    "java":   {"pom.xml", "src/main", "test/java"},
+    "java":   {"pom.xml", "src/main/resources", "src/main/java", "test/java"},
+    "csharp"  {"src/main/csharp", "test/csharp"}
     # …
 }
 

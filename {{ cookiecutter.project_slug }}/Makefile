@@ -25,7 +25,7 @@ TEST_CMD  := mvn -q test
 endif
 
 ifeq ($(LANG),csharp)
-PRE_BUILD := dotnet publish -c Release -o published
+PRE_BUILD := dotnet publish src/main/csharp/DemoApiCSharp.csproj -c Release -o published
 LINT_CMD  := echo "No C# lint configured"
 TEST_CMD  := dotnet test --nologo
 endif
