@@ -1,8 +1,42 @@
+# ---------------------------------------------------------------------------
+# Universal Makefile — rendered by Cookiecutter
+# Supports: python · java · csharp · cpp
+# ---------------------------------------------------------------------------
 PROJECT   := {{ cookiecutter.project_slug }}
 IMG       := $(PROJECT):local
 PORT      := 8000
 KIND_NAME ?= dev
-DOCKER_BUILDKIT ?= 1        # leverage BuildKit when available
+DOCKER_BUILDKIT ?= 1
+
+LANG      := {{ cookiecutter.language }}    # rendered value
+
+# ---------- Language-specific commands --------------------------------------
+
+ifeq ($(LANG),python)
+PRE_BUILD :=
+LINT_CMD  := pip install -q ruff black && ruff src tests && black --check src tests
+TEST_CMD  := pip install -q pytest && pytest -q
+endif
+
+ifeq ($(LANG),java)
+PRE_BUILD := mvn -B package -DskipTests         # requires mvn OR use multi-stage Dockerfile
+LINT_CMD  := echo "No Java lint configured"
+TEST_CMD  := mvn -q test
+endif
+
+ifeq ($(LANG),csharp)
+PRE_BUILD := dotnet publish -c Release -o published
+LINT_CMD  := echo "No C# lint configured"
+TEST_CMD  := dotnet test --nologo
+endif
+
+ifeq ($(LANG),cpp)
+PRE_BUILD := cmake -S . -B build && cmake --build build --config Release
+LINT_CMD  := echo "No C++ lint configured"
+TEST_CMD  := ctest --test-dir build --output-on-failure || true
+endif
+
+# ---------- Helper ----------------------------------------------------------
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | \
@@ -11,6 +45,7 @@ help: ## Show available targets
 # ---------- Build & Run ------------------------------------------------------
 
 build: ## Build Docker image
+	$(PRE_BUILD)
 	DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
 
 run: build ## Build & run container locally
@@ -27,14 +62,11 @@ clean: ## Remove local image
 
 # ---------- Quality ----------------------------------------------------------
 
-lint: ## Ruff + Black formatting checks
-	pip install -q ruff black
-	ruff src tests
-	black --check src tests
+lint: ## Language-specific lint
+	$(LINT_CMD)
 
-test: ## Run PyTest suite
-	pip install -q pytest
-	pytest -q
+test: ## Language-specific test
+	$(TEST_CMD)
 
 ci: lint test build ## Lint, test, then build (for CI pipeline)
 
