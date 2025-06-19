@@ -50,6 +50,9 @@ for lang, assets in LANGUAGE_ASSETS.items():
     if lang == language:
         continue
     for rel in assets:
-        rm(project_dir / rel)
+        path = project_dir / rel 
+        rm(path)
+        print(f"🧹  Removed file — {path}")
+
 
 print(f"🧹  Template clean-up complete — kept only {language!r} assets.")
