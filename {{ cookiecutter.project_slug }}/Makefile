@@ -16,24 +16,28 @@ ifeq ($(LANG),python)
 PRE_BUILD :=
 LINT_CMD  := pip install -q ruff black && ruff src tests && black --check src tests
 TEST_CMD  := pip install -q pytest && pytest -q
+BUILDKIT  := DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
 endif
 
 ifeq ($(LANG),java)
 PRE_BUILD := mvn -B package -DskipTests         # requires mvn OR use multi-stage Dockerfile
 LINT_CMD  := echo "No Java lint configured"
 TEST_CMD  := mvn -q test
+BUILDKIT  := DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
 endif
 
 ifeq ($(LANG),csharp)
 PRE_BUILD := dotnet publish src/main/csharp/DemoApiCSharp.csproj -c Release -o published
 LINT_CMD  := echo "No C# lint configured"
 TEST_CMD  := dotnet test --nologo
+BUILDKIT  := DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
 endif
 
 ifeq ($(LANG),cpp)
-PRE_BUILD := cmake -S . -B build && cmake --build build --config Release
+PRE_BUILD :=
 LINT_CMD  := echo "No C++ lint configured"
 TEST_CMD  := ctest --test-dir build --output-on-failure || true
+BUILDKIT  := DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
 endif
 
 # ---------- Helper ----------------------------------------------------------
@@ -46,7 +50,7 @@ help: ## Show available targets
 
 build: ## Build Docker image
 	$(PRE_BUILD)
-	DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
+	$(BUILDKIT)
 
 run: build ## Build & run container locally
 	docker run --rm -p $(PORT):$(PORT) $(IMG)

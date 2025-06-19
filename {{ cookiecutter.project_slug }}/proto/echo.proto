@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package demo;
+
+service Echo {
+  rpc Ping (PingRequest) returns (PingReply);
+}
+
+message PingRequest {
+  string text = 1;
+}
+
+message PingReply {
+  string text = 1;
+}
