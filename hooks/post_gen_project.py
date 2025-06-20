@@ -8,7 +8,7 @@ LANGUAGE_ASSETS = {
     "python": {"requirements.txt", "src/python", "test/python"},
     "java":   {"pom.xml", "src/main/resources", "src/main/java", "test/java"},
     "csharp":  {"src/main/csharp", "test/csharp"},
-    "cpp": {"proto/echo.proto", "CMakeLists.txt", "src/main/cpp", "test/cpp"}
+    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "test/cpp"}
     # …
 }
 
