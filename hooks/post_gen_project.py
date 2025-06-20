@@ -46,6 +46,13 @@ for lang, assets in LANGUAGE_ASSETS.items():
             rm(path)
             print(f"🧹  removed {path.relative_to(project_dir)}")
 
+if language == "python":
+    extra = project_dir / "src" / "main"
+    if extra.exists():
+        rm(extra)
+        print(f"🧹  removed {extra.relative_to(project_dir)}")
+
+
 # 3️⃣ AFTER
 snapshot("tree AFTER clean-up")
 

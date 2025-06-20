@@ -1,15 +1,15 @@
-########################  Python Fast API  #######################
 {% if cookiecutter.language == 'python' -%}
+########################  Python Fast API  #######################
 FROM python:3.12-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY src/python ./python
+COPY src/python/app ./app
 ENV PYTHONUNBUFFERED=1
-CMD ["uvicorn", "python.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
+={% elif cookiecutter.language == 'java' -%}
 ########################  Java Spring Boot  #######################
-{% elif cookiecutter.language == 'java' -%}
 # ---------- build stage ----------
 FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /build
@@ -23,8 +23,8 @@ WORKDIR /app
 COPY --from=builder /build/target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
 
-########################  C# .NET #######################
 {% elif cookiecutter.language == 'csharp' -%}
+########################  C# .NET #######################
 # ---------- build stage ----------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
 WORKDIR /build
@@ -38,8 +38,8 @@ COPY --from=builder /build/out .
 ENV ASPNETCORE_URLS=http://0.0.0.0:8000
 ENTRYPOINT ["dotnet", "DemoApiCSharp.dll"]
 
-########################  C++ GRPC  #######################
 {% elif cookiecutter.language == 'cpp' -%}
+########################  C++ GRPC  #######################
 # ---------- build stage ----------
 FROM debian:bookworm-slim AS build
 WORKDIR /src

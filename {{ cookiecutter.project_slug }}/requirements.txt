@@ -3,6 +3,7 @@ uvicorn[standard]
 # FastAPI’s TestClient
 requests
 # Pydantic BaseSettings for config
-pydantic
+pydantic>=2.11.0
+pydantic-settings>=0.11.0
 # Testing
 pytest
