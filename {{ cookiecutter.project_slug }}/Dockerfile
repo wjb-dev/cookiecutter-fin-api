@@ -8,7 +8,7 @@ COPY src/python/app ./app
 ENV PYTHONUNBUFFERED=1
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-={% elif cookiecutter.language == 'java' -%}
+{% elif cookiecutter.language == 'java' -%}
 ########################  Java Spring Boot  #######################
 # ---------- build stage ----------
 FROM maven:3.9-eclipse-temurin-21 AS builder
