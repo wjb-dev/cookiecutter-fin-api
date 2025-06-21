@@ -6,7 +6,7 @@ class HealthResponse(BaseModel):
     version: str
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "service": "{{ cookiecutter.project_slug }}",
                 "status": "ok",
