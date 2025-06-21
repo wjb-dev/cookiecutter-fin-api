@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Spring_Boot" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="demo-java-api" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.Application" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

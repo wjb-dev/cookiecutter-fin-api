@@ -1,2 +1,8 @@
+spring:
+  application:
+    metadata:
+      name: "{{ cookiecutter.project_slug }}"
+      version: 0.1.0
+      description: "{{ cookiecutter.project_slug }}"
 server:
   port: 8000
