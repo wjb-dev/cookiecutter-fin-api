@@ -46,8 +46,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
     <plugins>
       <!-- Build fat jar -->
       <plugin>
