@@ -45,23 +45,26 @@ FROM debian:bookworm-slim AS build
 WORKDIR /src
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential cmake git ca-certificates \
-        libssl-dev zlib1g-dev && \
+      build-essential cmake git pkg-config            \
+      libssl-dev libprotobuf-dev protobuf-compiler     \
+      libgrpc++-dev libgrpc-dev &&                    \
     rm -rf /var/lib/apt/lists/*
-
 COPY . .
-RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && \
-    cmake --build build --target demo-cpp-api -j1   # safer for cross-arch
+RUN cmake -S . -B build -DBUILD_TESTS=OFF && \
+    cmake --build build --config Release -j$(nproc)
 
 # ---------- runtime stage ----------
-FROM debian:bookworm-slim
 WORKDIR /app
+
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libssl3 zlib1g && \
+    apt-get install -y --no-install-recommends \
+      libssl3 libprotobuf23 libgrpc++1 &&         \
     rm -rf /var/lib/apt/lists/*
-COPY --from=build /src/build/demo-cpp-api /usr/local/bin/service
-EXPOSE 8000
-CMD ["service"]
+
+COPY --from=build /src/build/echo-server /usr/local/bin/echo-server
+EXPOSE 50051
+
+ENTRYPOINT ["/usr/local/bin/echo-server"]
 {% endif -%}
 
 

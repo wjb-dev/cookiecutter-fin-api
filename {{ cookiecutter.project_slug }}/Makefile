@@ -10,6 +10,8 @@ DOCKER_BUILDKIT ?= 1
 
 LANG      := {{ cookiecutter.language }}    # rendered value
 
+.PHONY: help build run kind-load skaffold clean lint test ci
+
 # ---------- Language-specific commands --------------------------------------
 
 ifeq ($(LANG),python)
@@ -34,7 +36,29 @@ ifeq ($(LANG),cpp)
 PRE_BUILD :=
 LINT_CMD  := echo "No C++ lint configured"
 TEST_CMD  := ctest --test-dir build --output-on-failure || true
+
+.PHONY: all build test docker-build docker-run clean
+
+all: build test
+
+build:
+    mkdir -p build && cd build && cmake .. && cmake --build .
+
+test:
+    cd build && ctest --output-on-failure
+
+docker-build:
+    docker build -t echo-service:local .
+
+docker-run:
+    docker run --rm -p 50051:50051 echo-service:local
+
+clean:
+    rm -rf build
+
 endif
+
+ifeq !($(LANG),cpp)
 
 # ---------- Helper ----------------------------------------------------------
 
@@ -70,4 +94,4 @@ test: ## Language-specific test
 
 ci: lint test build ## Lint, test, then build (for CI pipeline)
 
-.PHONY: help build run kind-load skaffold clean lint test ci
+endif

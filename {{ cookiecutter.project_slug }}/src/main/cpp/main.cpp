@@ -1,14 +1,16 @@
-#include "server/EchoServiceImpl.cpp"   // <- tiny demo; split headers if you like
-#include <grpcpp/server.h>
-#include <grpcpp/server_builder.h>
+#include <grpcpp/grpcpp.h>
+#include "echo_server.h"
 
-int main() {
-  demo::EchoServiceImpl service;
-  grpc::ServerBuilder    builder;
-  builder.AddListeningPort("0.0.0.0:8000",
-                           grpc::InsecureServerCredentials());
+int main(int argc, char** argv) {
+  std::string server_addr("0.0.0.0:50051");
+  EchoServiceImpl service;
+
+  grpc::ServerBuilder builder;
+  builder.AddListeningPort(server_addr, grpc::InsecureServerCredentials());
   builder.RegisterService(&service);
-  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-  std::cout << "gRPC server on :8000\n";
+
+  auto server = builder.BuildAndStart();
+  std::cout << "🚀 gRPC server listening on " << server_addr << std::endl;
   server->Wait();
+  return 0;
 }
