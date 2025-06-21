@@ -8,7 +8,7 @@ class HealthResponse(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "service": "options-greeks-api",
+                "service": "{{ cookiecutter.project_slug }}",
                 "status": "ok",
                 "version": "0.1.0",
             }

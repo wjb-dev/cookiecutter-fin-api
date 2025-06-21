@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
-from app.schemas.health import HealthResponse
-from app.services.health import get_health
+from src.app.schemas.health import HealthResponse
+from src.app.services.health import get_health
 
 router = APIRouter(tags=["Ping"], prefix="")
 
@@ -18,5 +18,4 @@ router = APIRouter(tags=["Ping"], prefix="")
 )
 async def healthz() -> JSONResponse:
     payload = get_health()
-    # JSONResponse will serialize via our Pydantic model
     return JSONResponse(payload)

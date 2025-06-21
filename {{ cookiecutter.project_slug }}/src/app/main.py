@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from app.api.v1.routers.health import router as health_router
-from app.core.config import settings
+from src.app.api.v1.routers.health import router as health_router
+from src.app.core.config import settings
 from typing import Dict, Any
 
 tags_metadata = [
@@ -26,7 +26,7 @@ app = FastAPI(
     openapi_tags= tags_metadata
 )
 def _custom_openapi() -> Dict[str, Any]:
-    if app.openapi_schema:  # cache
+    if app.openapi_schema:
         return app.openapi_schema
 
     schema = get_openapi(
@@ -54,5 +54,5 @@ def _custom_openapi() -> Dict[str, Any]:
     return schema
 
 
-app.openapi = _custom_openapi  # monkey-patch the generator
+app.openapi = _custom_openapi
 app.include_router(health_router)

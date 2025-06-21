@@ -1,4 +1,4 @@
-from app.core.config import settings
+from src.app.core.config import settings
 
 def get_health() -> dict:
     return {
