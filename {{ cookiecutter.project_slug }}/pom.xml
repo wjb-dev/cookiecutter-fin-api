@@ -38,14 +38,16 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Swagger/OpenAPI annotations -->
+    <!-- Lombok -->
     <dependency>
-      <groupId>io.swagger.core.v3</groupId>
-      <artifactId>swagger-annotations</artifactId>
-      <version>2.2.8</version>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.38</version>  <!-- check https://search.maven.org for the latest -->
+      <scope>provided</scope>
     </dependency>
 
-        <!-- Springdoc OpenAPI UI -->
+
+    <!-- Springdoc OpenAPI UI -->
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -72,6 +74,23 @@
             <goals><goal>repackage</goal></goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version> <!-- or your existing plugin version -->
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.30</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-parameters</arg>
+          </compilerArgs>
+        </configuration>
       </plugin>
     </plugins>
   </build>
