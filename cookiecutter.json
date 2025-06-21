@@ -6,8 +6,7 @@
   "language": [
     "python",
     "java",
-    "csharp",
-    "cpp"
+    "csharp"
   ],
   "use_kafka": [
     "y",

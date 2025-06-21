@@ -7,9 +7,7 @@ language = "{{ cookiecutter.language }}"
 LANGUAGE_ASSETS = {
     "python": {"requirements.txt", "src/app", "tests", "pytest.ini", "runConfigurations/FastAPI"},
     "java":   {"pom.xml", "src/main/resources", "src/main/java", "src/test/java", "runConfigurations/SpringBoot"},
-    "csharp":  {"src/main/csharp", "src/test/csharp"},
-    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "src/generated", "src/test/cpp"}
-    # …
+    "csharp":  {"src/main/csharp", "src/test/csharp"}
 }
 
 def rm(p: Path):
