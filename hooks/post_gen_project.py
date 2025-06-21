@@ -5,10 +5,10 @@ project_dir = Path.cwd()
 language = "{{ cookiecutter.language }}"
 
 LANGUAGE_ASSETS = {
-    "python": {"requirements.txt", "src/app", "src/test", "pytest.ini", "FastAPI"},
-    "java":   {"pom.xml", "src/main/resources", "src/main/java", "test/java"},
-    "csharp":  {"src/main/csharp", "test/csharp"},
-    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "test/cpp"}
+    "python": {"requirements.txt", "src/app", "tests", "pytest.ini", "FastAPI"},
+    "java":   {"pom.xml", "src/main/resources", "src/main/java", "src/main/test/java"},
+    "csharp":  {"src/main/csharp", "src/main/test/csharp"},
+    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "src/main/test/cpp"}
     # …
 }
 
