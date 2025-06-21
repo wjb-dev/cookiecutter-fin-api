@@ -6,9 +6,9 @@ language = "{{ cookiecutter.language }}"
 
 LANGUAGE_ASSETS = {
     "python": {"requirements.txt", "src/app", "tests", "pytest.ini", "FastAPI"},
-    "java":   {"pom.xml", "src/main/resources", "src/main/java", "src/main/test/java"},
-    "csharp":  {"src/main/csharp", "src/main/test/csharp"},
-    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "src/main/test/cpp"}
+    "java":   {"pom.xml", "src/main/resources", "src/main/java", "src/test/java"},
+    "csharp":  {"src/main/csharp", "src/test/csharp"},
+    "cpp": {"proto", "CMakeLists.txt", "src/main/cpp", "src/test/cpp"}
     # …
 }
 
