@@ -6,6 +6,7 @@
   "language": [
     "Python - FastAPI",
     "Java - SpringBoot ",
+    "Go - gRPC - Protoc",
     "csharp"
   ],
   "use_kafka": [
