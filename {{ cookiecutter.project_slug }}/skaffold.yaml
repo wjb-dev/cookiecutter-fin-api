@@ -1,30 +1,38 @@
-apiVersion: skaffold/v4beta6
+apiVersion: skaffold/v4beta13
 kind: Config
 metadata:
   name: {{ cookiecutter.project_slug }}
 
 build:
   artifacts:
-    - image: {{ cookiecutter.project_slug }}
+    - image: {{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}
       context: .
       docker:
         dockerfile: Dockerfile
 
-deploy:
+manifests:
   helm:
     releases:
       - name: {{ cookiecutter.project_slug }}
-        chartPath: chart
-        valuesFiles: [chart/values.yaml]
+        chartPath: chart/
+        setValues:
+          image:
+            repository: {{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}
+            tag: local
 
+portForward:
+  - resourceType: service
+    resourceName: {{ cookiecutter.project_slug }}
+    port: 50051
 profiles:
   - name: dev
+    activation:
+      - kubeContext: kind-*
     build:
       local:
         push: false
     deploy:
       helm:
-        hooks:
-          after:
-            - host:
-                command: ["kubectl", "rollout", "status", "deployment/{{ cookiecutter.project_slug }}"]
+        releases:
+          - name: {{ cookiecutter.project_slug }}
+

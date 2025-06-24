@@ -4,8 +4,8 @@
   "description": "A stateless micro\u2011service delivering financial data.",
   "author": "Your Name",
   "language": [
-    "python",
-    "java",
+    "Python - FastAPI",
+    "Java - SpringBoot ",
     "csharp"
   ],
   "use_kafka": [
