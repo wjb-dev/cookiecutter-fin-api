@@ -1,5 +1,8 @@
 import re
 
+from cookiecutter.main import cookiecutter
+
+
 def normalize(text: str) -> str:
     """Return lower-case string with *all* whitespace removed."""
     return re.sub(r"\s+", "", text).lower()
