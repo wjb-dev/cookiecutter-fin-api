@@ -1,35 +1,56 @@
-#!/usr/bin/env python3
-"""
-Tiny Cookiecutter post-generation hook.
-
-If the reusable package `cookiecutter-postgen` (containing post_gen.main)
-is not installed yet, install it with pip, then run main().
-"""
-import importlib
-import subprocess
-import sys
+import os, shutil, textwrap
 from pathlib import Path
 
-PKG_SPEC = "haraka==0.2.6"
+project_dir = Path.cwd()
+language = "{{ cookiecutter.language }}"
 
-def ensure_installed() -> None:
-    try:
-        importlib.import_module("haraka")
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", PKG_SPEC])
+LANGUAGE_ASSETS = {
+    "python": {"requirements.txt", "src/app", "tests", "pytest.ini", "runConfigurations/FastAPI"},
+    "java":   {"pom.xml", "src/main/resources", "src/main/java", "src/test/java", "runConfigurations/SpringBoot"},
+    "csharp":  {"src/main/csharp", "src/test/csharp"}
+}
 
-ensure_installed()
+def rm(p: Path):
+    if p.is_dir():
+        shutil.rmtree(p, ignore_errors=True)
+    else:
+        p.unlink(missing_ok=True)
 
-from haraka import main, PostGenConfig
-if __name__ == "__main__":
+# ---------------------------------------------------------------------------
+# helper: pretty-print a tree *relative to* project_dir
+# ---------------------------------------------------------------------------
+def snapshot(label: str):
+    print(f"\n─── {label} ─────────────────────────────────────────────")
+    for root, dirs, files in os.walk(project_dir):
+        rel_root = Path(root).relative_to(project_dir)
+        indent   = "│   " * len(rel_root.parts)
+        head     = "└── " if indent else ""
+        print(f"{indent}{head}{rel_root.name if rel_root.name else '.'}")
+        for f in sorted(files):
+            print(f"{indent}    {f}")
+    print("──────────────────────────────────────────────────────────\n")
 
-    cfg = PostGenConfig(
-        language     = "{{ cookiecutter.language }}",
-        project_slug = "{{ cookiecutter.project_slug }}",
-        author       = "{{ cookiecutter.author }}",
-        description  = "{{ cookiecutter.description }}",
-        project_dir  = Path.cwd(),
-        swagger      = False
-    )
+# ---------------------------------------------------------------------------
+# 1️⃣ BEFORE
+snapshot("tree BEFORE clean-up")
 
-    main(cfg)
+# 2️⃣ DELETE language assets that we do *not* want
+for lang, assets in LANGUAGE_ASSETS.items():
+    if lang == language:
+        continue
+    for rel in assets:
+        path = project_dir / rel
+        if path.exists():
+            rm(path)
+            print(f"🧹  removed {path.relative_to(project_dir)}")
+
+if language == "python":
+    extras = [project_dir / "src" / "main", project_dir / "test"]
+    for extra in extras:
+        rm(extra)
+        print(f"🧹  removed {extra.relative_to(project_dir)}")
+
+# 3️⃣ AFTER
+snapshot("tree AFTER clean-up")
+
+print(f"Template clean-up complete — kept only “{language}” assets.")
