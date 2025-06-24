@@ -2,25 +2,27 @@
 # Universal Makefile — rendered by Cookiecutter
 # Supports: python · java · csharp · cpp
 # ---------------------------------------------------------------------------
-PROJECT   := {{ cookiecutter.project_slug }}
-IMG       := $(PROJECT):local
-PORT      := 8000
-KIND_NAME ?= dev
-DOCKER_BUILDKIT ?= 1
-
-LANG      := {{ cookiecutter.language }}    # rendered value
-
-.PHONY: help build run kind-load skaffold clean lint test ci
+PROJECT         := {{ cookiecutter.project_slug }}
+IMG             := $(PROJECT):local
+PORT            := 8000
+KIND_NAME       ?= dev
+BUILD_DIR       := build
+BIN_DIR         := bin
+PROTO_DIR       := pkg/proto/v1
+PLATFORM        := $(shell uname -m)
+PROTO_FILES     := $(wildcard $(PROTO_DIR)/*.proto)
+CMAKE_FLAGS     := -DCMAKE_BUILD_TYPE=Release
+LANG            := {{ cookiecutter.variant }}
 
 # ---------- Language-specific commands --------------------------------------
 
-ifeq ($(LANG),python)
+ifeq ($(LANG),python-fastapi)
 PRE_BUILD :=
 LINT_CMD  := pip install -q ruff black && ruff src tests && black --check src tests
 TEST_CMD  := pip install -q pytest && pytest -q
 endif
 
-ifeq ($(LANG),java)
+ifeq ($(LANG),java-springboot)
 PRE_BUILD := mvn -B package -DskipTests         # requires mvn OR use multi-stage Dockerfile
 LINT_CMD  := echo "No Java lint configured"
 TEST_CMD  := mvn -q test
@@ -32,33 +34,10 @@ LINT_CMD  := echo "No C# lint configured"
 TEST_CMD  := dotnet test --nologo
 endif
 
-ifeq ($(LANG),cpp)
-PRE_BUILD :=
-LINT_CMD  := echo "No C++ lint configured"
-TEST_CMD  := ctest --test-dir build --output-on-failure || true
+ifneq ($(filter $(LANG),java-springboot python-fastapi csharp),)
 
-.PHONY: all build test docker-build docker-run clean
+.PHONY: help build run kind-load skaffold clean lint test ci
 
-all: build test
-
-build:
-    mkdir -p build && cd build && cmake .. && cmake --build .
-
-test:
-    cd build && ctest --output-on-failure
-
-docker-build:
-    docker build -t echo-service:local .
-
-docker-run:
-    docker run --rm -p 50051:50051 echo-service:local
-
-clean:
-    rm -rf build
-
-endif
-
-ifeq !($(LANG),cpp)
 
 # ---------- Helper ----------------------------------------------------------
 
@@ -70,7 +49,7 @@ help: ## Show available targets
 
 build: ## Build Docker image
 	$(PRE_BUILD)
-	DOCKER_BUILDKIT=$(DOCKER_BUILDKIT) docker build -t $(IMG) .
+	DOCKER_BUILDKIT=1 docker build -t $(IMG) .
 
 run: build ## Build & run container locally
 	docker run --rm -p $(PORT):$(PORT) $(IMG)
@@ -95,3 +74,72 @@ test: ## Language-specific test
 ci: lint test build ## Lint, test, then build (for CI pipeline)
 
 endif
+
+ifeq ($(LANG),go)
+
+GO_TESTDIR := test
+
+.PHONY: install build test docker-build docker-run clean generate clean-proto clean clean-generate
+
+install:
+	@echo "🛠️  Installing Go dependencies…"
+
+ifeq ($(PLATFORM),arm64)
+	@if ! command -v go >/dev/null 2>&1; then \
+		echo "🍎 Apple Silicon detected, installing Go via Homebrew..."; \
+		brew install go; \
+	else \
+		echo "✅ Go is already installed."; \
+	fi
+endif
+
+	@for pkg in \
+		google.golang.org/protobuf/cmd/protoc-gen-go@latest \
+		google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest; do \
+		binary=$$(basename $$pkg | cut -d'@' -f1); \
+		if ! command -v $$binary >/dev/null 2>&1; then \
+			echo "⬇️  Installing $$binary..."; \
+			go install $$pkg; \
+		else \
+			echo "✅ $$binary already installed."; \
+		fi; \
+	done
+
+generate: install
+	@echo "⚙️  Generating Go code from .proto…"
+	PATH="$(shell go env GOPATH)/bin:$(PATH)" protoc \
+		-I $(PROTO_DIR) \
+		--go_out=paths=source_relative:$(PROTO_DIR) \
+		--go-grpc_out=paths=source_relative:$(PROTO_DIR) \
+		$(PROTO_FILES)
+		# 🧹 Ensure go.mod/go.sum reflect any new or removed imports introduced by the generated code
+		go mod tidy
+
+test: generate
+	@echo "✅ Running Go tests…"
+	cd $(GO_TESTDIR) && go test ./...
+
+build:
+	@echo "🔨 Building Go Docker image…"
+	docker build -f Dockerfile -t $(PROJECT)-go:local .
+
+run: build
+	@echo "🚀 Running Go Docker container…"
+	docker run --rm -p 50051:50051 $(PROJECT)-go:local
+
+clean-generate:
+	@echo "🧹 Cleaning build artifacts…"
+	rm -rf $(BIN_DIR)
+
+clean-proto:
+	@echo "🧹 Cleaning generated proto files…"
+	rm -rf $(PROTO_DIR)/*.pb.go
+
+clean: clean-generate clean-proto
+
+skaffold:
+	@echo "🚀 Starting Skaffold in development mode with Go services..."
+	skaffold dev -p dev
+
+endif
+
