@@ -2,7 +2,7 @@
 
 {{ cookiecutter.description }}
 
-{% if cookiecutter.['__variant']  == "go-grpc-protoc" %}
+{% if cookiecutter['__variant']  == "go-grpc-protoc" %}
 ## gRPC Server Validation Commands
 
 Use `grpcurl` to validate the running gRPC server.
@@ -73,7 +73,7 @@ localhost:50051 v1.EchoService/Echo
 grpcurl -plaintext -d '{}' \
 localhost:50051 v1.PingService/Ping
 ```
-{% elif cookiecutter.['__variant']  == "python-fastapi" %}
+{% elif cookiecutter['__variant']  == "python-fastapi" %}
 ## 🚀 FastAPI Quick-start
 
 ```bash
@@ -91,7 +91,7 @@ Visit docs at: <http://127.0.0.1:8000/docs>
 
 Visit actuator at: `http://localhost:8080/actuator/health`
 
-{% elif cookiecutter.['__variant']  == "csharp" %}
+{% elif cookiecutter['__variant']  == "csharp" %}
 ## 🔧 .NET API Quick-start
 
 ```bash
