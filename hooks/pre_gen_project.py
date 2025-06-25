@@ -11,7 +11,7 @@ choice = "{{ cookiecutter.language }}"                     # <- ask() or argpars
 slug, abbrev = LANG_MAP[choice]
 
 cookiecutter(
-    'cookiecutter-fin-api',
+    '{ cookiecutter.project_slug }}',
     no_input=True,
     extra_context={
         "variant":    slug,
