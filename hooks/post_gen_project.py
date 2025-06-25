@@ -23,12 +23,16 @@ ensure_installed()
 from haraka import main, PostGenConfig
 if __name__ == "__main__":
 
+    def get_bool(value: str) -> bool:
+        return True if value.lower() in ("yes", "true", "t", "1", "y") else False
+
     cfg = PostGenConfig(
         language     = "{{ cookiecutter.variant }}",
         project_slug = "{{ cookiecutter.project_slug }}",
         author       = "{{ cookiecutter.author }}",
         description  = "{{ cookiecutter.description }}",
         project_dir  = Path.cwd(),
+        create_repo  = get_bool("{{ cookiecutter.description }}")
     )
 
     main(cfg)

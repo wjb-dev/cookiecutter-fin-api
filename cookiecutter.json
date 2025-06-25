@@ -12,5 +12,10 @@
   "use_kafka": [
     "y",
     "n"
+  ],
+  "create_repo": [
+    "yes (local + remote)",
+    "yes (local only)",
+    "no"
   ]
 }
