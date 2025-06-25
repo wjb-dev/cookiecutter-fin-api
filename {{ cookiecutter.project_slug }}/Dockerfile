@@ -1,4 +1,4 @@
-{% if cookiecutter._variant == 'python-fastAPI' -%}
+{% if cookiecutter.__variant == 'python-fastAPI' -%}
 #########################################################
 #                    Python FastAPI                     #
 #########################################################
@@ -11,7 +11,7 @@ COPY src /app/src
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 CMD ["uvicorn", "src.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
-{% elif cookiecutter._variant == 'java-springboot' -%}
+{% elif cookiecutter.__variant == 'java-springboot' -%}
 #########################################################
 #                    Java Springboot                    #
 #########################################################
@@ -29,7 +29,7 @@ WORKDIR /app
 COPY --from=builder /build/target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
 
-{% elif cookiecutter._variant == 'csharp' -%}
+{% elif cookiecutter.__variant == 'csharp' -%}
 #########################################################
 #                       C# .NET                         #
 #########################################################
@@ -46,7 +46,7 @@ COPY --from=builder /build/out .
 ENV ASPNETCORE_URLS=http://0.0.0.0:8000
 ENTRYPOINT ["dotnet", "DemoApiCSharp.dll"]
 
-{% elif cookiecutter._variant == 'go-grpc-protc' -%}
+{% elif cookiecutter.__variant == 'go-grpc-protc' -%}
 #########################################################
 #              GoLang gRPC-ProtoBuf Protoc              #
 #########################################################

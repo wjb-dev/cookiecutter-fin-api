@@ -9,7 +9,7 @@
     "Go - gRPC - Protoc",
     "csharp"
   ],
-  "_variant": "{{ cookiecutter.language.lower().replace(' ', '') }}",
+  "__variant": "{{ cookiecutter.language.lower().replace(' ', '') }}",
   "_language_abbrev": "{{ cookiecutter.language.split(' ')[0].lower() }}",
   "use_kafka": [
     "y",
