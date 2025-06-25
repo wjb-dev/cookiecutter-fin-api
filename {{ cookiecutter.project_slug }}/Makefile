@@ -12,7 +12,7 @@ PROTO_DIR       := pkg/proto/v1
 PLATFORM        := $(shell uname -m)
 PROTO_FILES     := $(wildcard $(PROTO_DIR)/*.proto)
 CMAKE_FLAGS     := -DCMAKE_BUILD_TYPE=Release
-LANG            := {{ cookiecutter.__variant }}
+LANG            := {{ cookiecutter.['__variant'] }}
 
 # ---------- Language-specific commands --------------------------------------
 
