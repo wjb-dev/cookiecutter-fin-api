@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   # repository will be built by your Makefile/Dockerfile
-  repository: "{{ cookiecutter.project_slug }}-{{ cookiecutter.language }}"
+  repository: "{{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}"
   tag: "local"
   pullPolicy: IfNotPresent
 
