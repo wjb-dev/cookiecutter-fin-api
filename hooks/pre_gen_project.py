@@ -1,22 +1,23 @@
+# hooks/pre_gen_project.py
 import re
+import sys
 
-from cookiecutter.main import cookiecutter
+# ── Jinja block executes before Python runs ────────────────────
+{% set slug = cookiecutter.language|lower|replace(' ', '') %}
+{% set abbrev_map = {
+        'python-fastapi': 'python',
+        'java-springboot': 'java',
+        'go-grpc-protoc':  'go',
+        'csharp':          'cs'
+} %}
+{% set _ = cookiecutter.update({
+        'language_slug': slug,
+        'language_abbrev': abbrev_map.get(slug, slug[:2])
+}) %}
+# ── end Jinja block ─────────────────────────────────────────────
 
-
-def normalize(text: str) -> str:
-    """Return lower-case string with *all* whitespace removed."""
-    return re.sub(r"\s+", "", text).lower()
-
-# 2) Slug version (lowercase, no spaces)
-slug = normalize(cookiecutter["language"])
-cookiecutter["variant"] = slug
-
-ABBREV_MAP = {
-    "python-fastapi": "python",
-    "java-springboot": "java",
-    "csharp": "cs",
-    "go-grpc-protoc": "go",
-}
-
-cookiecutter["language_abbrev"] = ABBREV_MAP.get(slug, slug[:2])
-
+# The rest is ordinary Python; you can still validate or abort
+LANG_RE = r'^[a-z\-]+$'
+if not re.match(LANG_RE, '{{ cookiecutter.language_slug }}'):
+    print("ERROR: invalid language slug")
+    sys.exit(1)
