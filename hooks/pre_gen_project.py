@@ -14,7 +14,7 @@ slug, abbrev = LANG_MAP[choice]
 
 cookiecutter(
     "gh:wjb-dev/cookiecutter-fin-api",
-    no_input=True,
+    no_input=False,
     extra_context={
         "variant":    slug,
         "language_abbrev":  abbrev,
