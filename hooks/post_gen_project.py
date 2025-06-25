@@ -29,6 +29,7 @@ if __name__ == "__main__":
     print(">>> DEBUG: variant is", "{{ cookiecutter._variant }}")
     print(">>> DEBUG: swaggerEnabled is", "{{ cookiecutter._swaggerEnabled }}")
     print(">>> DEBUG: create_repo choice is", "{{ cookiecutter.create_repo }}")
+    print(">>> DEBUG: project_slug choice is", "{{ cookiecutter.project_slug }}")
 
     cfg = PostGenConfig(
         language     = "{{ cookiecutter._variant }}",
