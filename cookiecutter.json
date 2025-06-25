@@ -17,11 +17,5 @@
     "yes (local + remote)",
     "yes (local only)",
     "no"
-  ],
-  "language_slug": "{{ cookiecutter.language|lower|replace(' ', '') }}",
-  "language_abbrev": "{{ (
-        'python'  if cookiecutter.language.startswith('Python') else
-        'java'    if cookiecutter.language.startswith('Java')   else
-        'go'      if cookiecutter.language.startswith('Go')     else
-        'cs'     ) }}"
+  ]
 }
