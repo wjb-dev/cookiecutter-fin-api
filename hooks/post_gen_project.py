@@ -26,6 +26,10 @@ if __name__ == "__main__":
     def get_bool(value: str) -> bool:
         return True if value.lower() in ("yes", "true", "t", "1", "y") else False
 
+    print(">>> DEBUG: variant is", "{{ cookiecutter._variant }}")
+    print(">>> DEBUG: swaggerEnabled is", "{{ cookiecutter._swaggerEnabled }}")
+    print(">>> DEBUG: create_repo choice is", "{{ cookiecutter.create_repo }}")
+
     cfg = PostGenConfig(
         language     = "{{ cookiecutter._variant }}",
         project_slug = "{{ cookiecutter.project_slug }}",

@@ -20,6 +20,5 @@
     "yes (local only)",
     "no"
   ],
-
   "_swaggerEnabled": "{% if 'protc' in cookiecutter.language %}false{% else %}true{% endif %}"
 }
