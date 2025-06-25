@@ -78,5 +78,5 @@ COPY --from=builder /app/{{ cookiecutter.project_slug }} .
 COPY --from=builder /app/configs /app/configs
 EXPOSE 50051
 ENTRYPOINT ["./{{ cookiecutter.project_slug }}"]
-
+endif
 
