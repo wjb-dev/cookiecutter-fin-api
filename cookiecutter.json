@@ -19,5 +19,6 @@
     "no"
   ],
   "_variant": "{{ cookiecutter.language.lower().replace(' ', '') }}",
-  "_language_abbrev": "{{ cookiecutter.language.split(' ')[0].lower() }}"
+  "_language_abbrev": "{{ cookiecutter.language.split(' ')[0].lower() }}",
+  "_swaggerEnabled": "{% if 'protc' in cookiecutter.language %}false{% else %}true{% endif %}"
 }

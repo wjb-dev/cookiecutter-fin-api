@@ -15,7 +15,7 @@ service:
   httpPort: 8080
 
 swagger:
-  enabled: {% if cookiecutter.enableSwagger == "y" %}true{% else %}false{% endif %}
+  enabled: "{{ cookiecutter._swaggerEnabled }}"
   port: 8080
   file: service.swagger.json
 
