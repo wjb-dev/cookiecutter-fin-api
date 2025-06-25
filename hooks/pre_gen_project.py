@@ -7,7 +7,9 @@ LANG_MAP = {
     "csharp":            ("csharp", "cs"),
 }
 
-choice = "{{ cookiecutter.language }}"                     # <- ask() or argparse, etc.
+choice = "{{ cookiecutter.language }}"
+print("HELLO THERE!!!!")
+print(choice) # <- ask() or argparse, etc.
 slug, abbrev = LANG_MAP[choice]
 
 cookiecutter(
