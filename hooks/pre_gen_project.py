@@ -13,7 +13,7 @@ print(choice) # <- ask() or argparse, etc.
 slug, abbrev = LANG_MAP[choice]
 
 cookiecutter(
-    '{ cookiecutter.project_slug }}',
+    "{ cookiecutter.project_slug }}",
     no_input=True,
     extra_context={
         "variant":    slug,
