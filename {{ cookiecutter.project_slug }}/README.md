@@ -2,7 +2,7 @@
 
 {{ cookiecutter.description }}
 
-{% if cookiecutter.variant == "go-grpc-protoc" %}
+{% if cookiecutter._variant == "go-grpc-protoc" %}
 ## gRPC Server Validation Commands
 
 Use `grpcurl` to validate the running gRPC server.
@@ -73,7 +73,7 @@ localhost:50051 v1.EchoService/Echo
 grpcurl -plaintext -d '{}' \
 localhost:50051 v1.PingService/Ping
 ```
-{% elif cookiecutter.variant == "python-fastapi" %}
+{% elif cookiecutter._variant == "python-fastapi" %}
 ## 🚀 FastAPI Quick-start
 
 ```bash
@@ -82,7 +82,7 @@ uvicorn {{ cookiecutter.project_slug }}.main:app --reload
 
 Visit docs at: <http://127.0.0.1:8000/docs>
 
-{% elif cookiecutter.variant == "java-springboot" %}
+{% elif cookiecutter._variant == "java-springboot" %}
 ## ☕ Spring Boot Quick-start
 
 ```bash
@@ -91,7 +91,7 @@ Visit docs at: <http://127.0.0.1:8000/docs>
 
 Visit actuator at: `http://localhost:8080/actuator/health`
 
-{% elif cookiecutter.variant == "csharp" %}
+{% elif cookiecutter._variant == "csharp" %}
 ## 🔧 .NET API Quick-start
 
 ```bash

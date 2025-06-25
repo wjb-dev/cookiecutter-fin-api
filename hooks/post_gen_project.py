@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-PKG_SPEC = "haraka==0.2.5"
+PKG_SPEC = "haraka==0.2.7"
 
 def ensure_installed() -> None:
     try:
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         return True if value.lower() in ("yes", "true", "t", "1", "y") else False
 
     cfg = PostGenConfig(
-        language     = "{{ cookiecutter.variant }}",
+        language     = "{{ cookiecutter._variant }}",
         project_slug = "{{ cookiecutter.project_slug }}",
         author       = "{{ cookiecutter.author }}",
         description  = "{{ cookiecutter.description }}",

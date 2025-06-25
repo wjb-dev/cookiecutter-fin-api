@@ -36,7 +36,7 @@ variable "release_name" {
 
 variable "image_repo" {
   type    = string
-  default = "{{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}"
+  default = "{{ cookiecutter.project_slug }}-{{ cookiecutter._language_abbrev }}"
   description = "Container image repository"
 }
 

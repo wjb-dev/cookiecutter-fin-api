@@ -5,7 +5,7 @@ metadata:
 
 build:
   artifacts:
-    - image: {{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}
+    - image: {{ cookiecutter.project_slug }}-{{ cookiecutter._language_abbrev }}
       context: .
       docker:
         dockerfile: Dockerfile
@@ -17,7 +17,7 @@ manifests:
         chartPath: chart/
         setValues:
           image:
-            repository: {{ cookiecutter.project_slug }}-{{ cookiecutter.language_abbrev }}
+            repository: {{ cookiecutter.project_slug }}-{{ cookiecutter._language_abbrev }}
             tag: local
 
 portForward:

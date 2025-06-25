@@ -17,5 +17,7 @@
     "yes (local + remote)",
     "yes (local only)",
     "no"
-  ]
+  ],
+  "_variant": "{{ cookiecutter.language.lower().replace(' ', '') }}",
+  "_language_abbrev": "{{ cookiecutter.language.split(' ')[0].lower() }}"
 }
